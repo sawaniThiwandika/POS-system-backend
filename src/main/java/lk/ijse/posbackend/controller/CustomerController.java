@@ -152,6 +152,58 @@ public class CustomerController extends HttpServlet {
     @Override
     protected void doPatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        System.out.println("I'm in doPatch method");
+
+        // Validate Content-Type
+        String contentType = req.getContentType();
+        if (contentType == null || !contentType.toLowerCase().startsWith("application/json")) {
+            resp.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, "Unsupported Media Type");
+            return;
+        }
+
+        // Log headers for debugging
+        String myHeader = req.getHeader("myHeader");
+        System.out.println("myHeader: " + myHeader);
+
+        // Read and log the request body
+        StringBuilder requestBody = new StringBuilder();
+        try (BufferedReader reader = req.getReader()) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                requestBody.append(line);
+            }
+        }
+        System.out.println("Request Body: " + requestBody.toString());
+
+        // Parse JSON to DTO
+        CustomerDTO customer;
+        try {
+            Jsonb jsonb = JsonbBuilder.create();
+            System.out.println("aaaaaaaaaaaa");
+            customer = jsonb.fromJson(requestBody.toString(), CustomerDTO.class);
+            System.out.println("Parsed CustomerDTO: " + customer);
+            System.out.println("bbbbbbbbbbbbb");
+
+        } catch (Exception e) {
+            //resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JSON");
+            e.printStackTrace();
+            return;
+        }
+
+        // Process data and send response
+            boolean updateCustomer = dataProcess.updateCustomer(customer, connection);
+        System.out.println("after save "+updateCustomer);
+        PrintWriter writer = resp.getWriter();
+
+        if (updateCustomer) {
+            writer.write("Update successfully");
+            resp.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            writer.write("Cannot Update");
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Cannot save");
+        }
+
+        writer.flush(); // Ensure all data is sent
 
 
     }

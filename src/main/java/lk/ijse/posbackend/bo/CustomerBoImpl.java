@@ -44,8 +44,13 @@ public class CustomerBoImpl implements CustomerBo {
     }
 
     @Override
-    public boolean updateCustomer(CustomerDTO studentDTO, Connection connection) {
-    return true;
+    public boolean updateCustomer(CustomerDTO customerDTO, Connection connection) {
+        System.out.println("Im in bo "+customerDTO);
+        CustomerEntity customerEntity = new CustomerEntity(customerDTO.get_cusId(), customerDTO.get_cusName(), customerDTO.get_cusEmail(), customerDTO.get_cusAddress(),
+                customerDTO.get_cusContact(), customerDTO.get_addCusDate());
+        boolean s = customerDao.updateCustomer(customerEntity, connection);
+        return s;
+
     }
 
     @Override

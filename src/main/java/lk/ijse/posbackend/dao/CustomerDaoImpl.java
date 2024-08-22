@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 public class CustomerDaoImpl implements CustomerDao {
     static String save_statement = "INSERT INTO customer VALUES (?,?,?,?,?,?)";
+    static String update_customer = "UPDATE customer SET (?,?,?,?,?,?) WHERE id = ?;";
     static String getCustomersstatement = "SELECT * FROM customer";
 
     @Override
@@ -79,8 +80,29 @@ public class CustomerDaoImpl implements CustomerDao {
 
     @Override
     public boolean updateCustomer(CustomerEntity customer, Connection connection) {
-    return true;
+        int rowsAffected = 0;
+
+        String updateCustomerQuery = "UPDATE customer SET name = ?, email = ?, address = ?, contact = ?, date = ? WHERE cus_id = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(updateCustomerQuery)) {
+            preparedStatement.setString(1, customer.getName());
+            preparedStatement.setString(2, customer.getEmail());
+            preparedStatement.setString(3, customer.getAddress());
+            preparedStatement.setString(4, customer.getContact());
+            preparedStatement.setDate(5, Date.valueOf(customer.getDate()));
+            preparedStatement.setString(6, customer.getCusId());
+
+            rowsAffected = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            // Log the exception message
+            e.printStackTrace(); // or use a logging framework
+            throw new RuntimeException("Error updating customer", e);
+        }
+
+        return rowsAffected > 0;
     }
+
+
 
     @Override
     public boolean deleteCustomer(String cusID, Connection connection) {
