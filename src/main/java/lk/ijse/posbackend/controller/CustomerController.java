@@ -3,15 +3,12 @@ package lk.ijse.posbackend.controller;
 
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
-import jakarta.json.bind.JsonbException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebInitParam;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-
 import lk.ijse.posbackend.bo.CustomerBo;
 import lk.ijse.posbackend.bo.CustomerBoImpl;
 import lk.ijse.posbackend.data.CustomerDTO;
@@ -24,6 +21,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 @WebServlet(urlPatterns = "/Customer", initParams = {
         @WebInitParam(name = "driver-class", value = "com.mysql.cj.jdbc.Drive"),
@@ -70,8 +68,23 @@ public class CustomerController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 
+        CustomerDTO dto = new CustomerDTO();
+        ArrayList<CustomerDTO>customerDTOArrayList=new ArrayList<>();
+
+        try (PrintWriter writer = resp.getWriter()) {
 
 
+            customerDTOArrayList = dataProcess.getCustomerList( connection);
+            if (customerDTOArrayList== null) {
+                resp.sendError(HttpServletResponse.SC_NO_CONTENT);
+            } else {
+                resp.setContentType("application/json");// json type response ekk enw kyl kynnn onima ne eth dana eka hodai
+                System.out.println(customerDTOArrayList);
+                Jsonb jsonb = JsonbBuilder.create();// create json object
+                jsonb.toJson(customerDTOArrayList, resp.getWriter());// convert to json type (object , response eke writer) //serialization
+            }
+        }
+        ;
 
 
     }

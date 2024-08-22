@@ -8,9 +8,23 @@ import lk.ijse.posbackend.data.CustomerDTO;
 import lk.ijse.posbackend.entity.CustomerEntity;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 
 public class CustomerBoImpl implements CustomerBo {
     CustomerDao customerDao=new CustomerDaoImpl();
+
+    @Override
+    public ArrayList<CustomerDTO> getCustomerList(Connection connection) {
+        ArrayList<CustomerDTO> customerDTOArrayList = new ArrayList<>();
+        ArrayList<CustomerEntity> customerList = customerDao.getCustomerList(connection);
+        for (CustomerEntity customer:customerList) {
+            customerDTOArrayList.add(new CustomerDTO(customer.getCusId(),customer.getName(),customer.getEmail(),
+                    customer.getAddress(),customer.getContact(),customer.getDate()));
+
+        }
+        return customerDTOArrayList;
+    }
+
     @Override
     public CustomerDTO getCustomer(String studentID, Connection connection) {
         CustomerDTO dto = new CustomerDTO();
