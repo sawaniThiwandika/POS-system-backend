@@ -54,7 +54,10 @@ public class CustomerBoImpl implements CustomerBo {
     }
 
     @Override
-    public boolean deleteCustomer(String studentID, Connection connection) {
-        return true;
+    public boolean deleteCustomer(String customerID, Connection connection) {
+
+        System.out.println("Im in bo "+customerID);
+        boolean s = customerDao.deleteCustomer(customerID, connection);
+        return s;
     }
 }

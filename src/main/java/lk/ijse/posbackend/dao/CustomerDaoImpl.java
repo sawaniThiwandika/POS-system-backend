@@ -106,6 +106,24 @@ public class CustomerDaoImpl implements CustomerDao {
 
     @Override
     public boolean deleteCustomer(String cusID, Connection connection) {
-        return true;
+        int rowsAffected = 0;
+
+        // Correct SQL DELETE query with table name
+        String deleteCustomerQuery = "DELETE FROM customer WHERE cus_id = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(deleteCustomerQuery)) {
+            // Set the parameter for the query
+            preparedStatement.setString(1, cusID);
+
+            // Execute the update and get the number of rows affected
+            rowsAffected = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            // Log the exception message
+            e.printStackTrace(); // or use a logging framework
+            throw new RuntimeException("Error deleting customer", e);
+        }
+
+        // Return true if at least one row was affected, otherwise false
+        return rowsAffected > 0;
     }
 }
