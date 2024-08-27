@@ -44,7 +44,7 @@ public class ItemDaoImpl implements ItemDao{
     @Override
     public String saveItem(ItemEntity itemEntity, Connection connection) {
         int i = 0;
-        String save_statement = "INSERT INTO item VALUES (?,?,?,?,?,?)";
+        String save_statement = "INSERT INTO item VALUES (?,?,?,?,?)";
         try {
             System.out.println(itemEntity);
 
@@ -54,16 +54,18 @@ public class ItemDaoImpl implements ItemDao{
             preparedStatement.setString(3, itemEntity.getCategory());
             preparedStatement.setDouble(4, itemEntity.getUnitPrice());
             preparedStatement.setDouble(5, itemEntity.getQty());
-
+            System.out.println("In Dao ");
             i = preparedStatement.executeUpdate();
-
+            System.out.println("after execute");
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         if (i > 0) {
+            System.out.println("success");
             return "Saved";
         } else {
+            System.out.println("not success");
             return "error";
         }
 

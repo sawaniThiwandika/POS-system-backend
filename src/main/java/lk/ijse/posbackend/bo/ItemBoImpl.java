@@ -17,8 +17,7 @@ public class ItemBoImpl implements ItemBo {
         ArrayList<ItemDTO> itemDTOArrayList = new ArrayList<>();
         ArrayList<ItemEntity> itemList = itemDao.getItemList(connection);
         for (ItemEntity item:itemList) {
-            itemDTOArrayList.add(new ItemDTO(item.getItemCode(),item.getName(),item.getCategory(),
-                    item.getUnitPrice(),item.getQty()));
+            itemDTOArrayList.add(new ItemDTO(item.getItemCode(),item.getUnitPrice(),item.getCategory(),item.getName(),item.getQty()));
 
         }
         return itemDTOArrayList;
@@ -32,8 +31,9 @@ public class ItemBoImpl implements ItemBo {
     @Override
     public String saveItem(ItemDTO itemDTO, Connection connection) {
         System.out.println("Im in bo "+itemDTO);
-        ItemEntity itemEntity = new ItemEntity(itemDTO.getItemCode(), itemDTO.getName(), itemDTO.getCategory(),
-                itemDTO.getUnitPrice(), itemDTO.getUnitPrice());
+        ItemEntity itemEntity = new ItemEntity(itemDTO.get_itemCode(), itemDTO.get_itemName(), itemDTO.get_category(),
+                itemDTO.get_unitPrice(), itemDTO.get_itemQty());
+        System.out.println("Item entity in Bo "+itemEntity);
         String s = itemDao.saveItem(itemEntity, connection);
         return s;
     }
@@ -41,8 +41,8 @@ public class ItemBoImpl implements ItemBo {
     @Override
     public boolean updateItem(ItemDTO itemDTO, Connection connection) {
         System.out.println("Im in bo "+itemDTO);
-        ItemEntity itemEntity = new ItemEntity(itemDTO.getItemCode(), itemDTO.getName(), itemDTO.getCategory(),
-                itemDTO.getUnitPrice(), itemDTO.getUnitPrice());
+        ItemEntity itemEntity = new ItemEntity(itemDTO.get_itemCode(), itemDTO.get_itemName(), itemDTO.get_category(),
+                itemDTO.get_unitPrice(), itemDTO.get_itemQty());
         boolean s = itemDao.updateItem(itemEntity, connection);
         return s;
     }

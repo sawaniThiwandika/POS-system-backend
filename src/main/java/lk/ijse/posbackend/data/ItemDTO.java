@@ -8,9 +8,9 @@ import lombok.*;
 @AllArgsConstructor
 @Setter
 public class ItemDTO {
-    String itemCode;
-    String name;
-    String category;
-    double unitPrice;
-    double qty;
+    String _itemCode;
+    double _unitPrice;
+    String _category;
+    String _itemName;
+    double _itemQty;
 }
