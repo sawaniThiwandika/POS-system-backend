@@ -82,7 +82,7 @@ public class ItemDaoImpl implements ItemDao{
             preparedStatement.setString(2, itemEntity.getCategory());
             preparedStatement.setDouble(3, itemEntity.getUnitPrice());
             preparedStatement.setDouble(4, itemEntity.getQty());
-            preparedStatement.setDate(5, Date.valueOf(itemEntity.getItemCode()));
+            preparedStatement.setString(5, itemEntity.getItemCode());
 
 
             rowsAffected = preparedStatement.executeUpdate();
