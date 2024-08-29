@@ -12,7 +12,9 @@ Handle customer information and sales history
 
 
 Technologies
+
 Programming Language: Java
+
 Database:MySql
 
 Front End- https://github.com/sawaniThiwandika/pos-system-with-html.git
