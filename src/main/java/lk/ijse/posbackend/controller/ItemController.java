@@ -8,11 +8,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lk.ijse.posbackend.bo.CustomerBo;
-import lk.ijse.posbackend.bo.CustomerBoImpl;
+import lk.ijse.posbackend.ItemCodeWrapper;
 import lk.ijse.posbackend.bo.ItemBo;
 import lk.ijse.posbackend.bo.ItemBoImpl;
-import lk.ijse.posbackend.data.CustomerDTO;
 import lk.ijse.posbackend.data.ItemDTO;
 
 import javax.naming.InitialContext;
@@ -89,8 +87,60 @@ public class ItemController extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doDelete(req, resp);
+        System.out.println("I'm in doDelete method");
+
+        // Validate Content-Type
+        String contentType = req.getContentType();
+        if (contentType == null || !contentType.toLowerCase().startsWith("application/json")) {
+            resp.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, "Unsupported Media Type");
+            return;
+        }
+
+        // Log headers for debugging
+        String myHeader = req.getHeader("myHeader");
+        System.out.println("myHeader: " + myHeader);
+
+        // Read and log the request body
+        StringBuilder requestBody = new StringBuilder();
+        try (BufferedReader reader = req.getReader()) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                requestBody.append(line);
+            }
+        }
+        System.out.println("Request Body: " + requestBody.toString());
+
+        // Parse JSON to DTO
+        String itemCode;
+        try {
+            Jsonb jsonb = JsonbBuilder.create();
+            ItemCodeWrapper wrapper = jsonb.fromJson(requestBody.toString(), ItemCodeWrapper.class);
+            itemCode = wrapper.itemCode;
+            System.out.println("delete customer ID: " + itemCode);
+            System.out.println("bbbbbbbbbbbbb");
+
+        } catch (Exception e) {
+            //resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JSON");
+            e.printStackTrace();
+            return;
+        }
+
+        // Process data and send response
+        boolean deleteItem = dataProcess.deleteItem(itemCode, connection);
+        System.out.println("after delete " + deleteItem);
+        PrintWriter writer = resp.getWriter();
+
+        if (deleteItem) {
+            writer.write("delete successfully");
+            resp.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            writer.write("Cannot delete");
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Cannot delete");
+        }
+
+        writer.flush(); // Ensure all data is sent
     }
+
 
     @Override
     protected void doPatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
